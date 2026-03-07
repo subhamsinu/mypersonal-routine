@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Routine Manager – Subham Sethy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <!-- React 18 UMD – sets window.React and window.ReactDOM -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
+    <!-- Babel for in-browser JSX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #0d0f14;
+            --sf: #13161e;
+            --sf2: #1a1e28;
+            --sf3: #222736;
+            --bd: rgba(255, 255, 255, .07);
+            --bd2: rgba(255, 255, 255, .13);
+            --tx: #e8eaf0;
+            --tx2: #8b90a4;
+            --tx3: #555b70;
+            --ac: #6c63ff;
+            --ac2: #9d97ff;
+            --glow: rgba(108, 99, 255, .22);
+            --r: 14px;
+            --rs: 8px;
+            --sw: 242px;
+            --tr: .2s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .light {
+            --bg: #f0f2f8;
+            --sf: #fff;
+            --sf2: #f7f8fc;
+            --sf3: #eaecf4;
+            --bd: rgba(0, 0, 0, .07);
+            --bd2: rgba(0, 0, 0, .13);
+            --tx: #0f1117;
+            --tx2: #555b70;
+            --tx3: #9499ad;
+            --glow: rgba(108, 99, 255, .12)
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--tx);
+            transition: background var(--tr), color var(--tr)
+        }
+
+        #root {
+            display: flex;
+            min-height: 100vh
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Syne', sans-serif
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--sf3);
+            border-radius: 99px
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sw);
+            background: var(--sf);
+            border-right: 1px solid var(--bd);
+            display: flex;
+            flex-direction: column;
+            padding: 22px 14px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 200;
+            transition: transform var(--tr), background var(--tr)
+        }
+
+        .sidebar.closed {
+            transform: translateX(-100%)
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 6px 20px;
+            border-bottom: 1px solid var(--bd);
+            margin-bottom: 18px
+        }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, #6c63ff, #a78bfa);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px
+        }
+
+        .logo-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 1.2
+        }
+
+        .logo-sub {
+            font-size: 10px;
+            color: var(--tx3)
+        }
+
+        .nlbl {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .09em;
+            color: var(--tx3);
+            text-transform: uppercase;
+            padding: 0 9px;
+            margin-bottom: 5px;
+            margin-top: 4px
+        }
+
+        .ni-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 10px;
+            border-radius: var(--rs);
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--tx2);
+            transition: all var(--tr);
+            margin-bottom: 2px;
+            user-select: none
+        }
+
+        .ni-row:hover {
+            background: var(--sf2);
+            color: var(--tx)
+        }
+
+        .ni-row.act {
+            background: var(--glow);
+            color: var(--ac2)
+        }
+
+        .ni-row .ic {
+            font-size: 15px;
+            width: 19px;
+            text-align: center;
+            flex-shrink: 0
+        }
+
+        .nbadge {
+            margin-left: auto;
+            background: var(--ac);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 99px;
+            padding: 1px 6px
+        }
+
+        .sfooter {
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px solid var(--bd)
+        }
+
+        .uchip {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: var(--rs);
+            cursor: pointer;
+            transition: background var(--tr)
+        }
+
+        .uchip:hover {
+            background: var(--sf2)
+        }
+
+        .av {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6c63ff, #ec4899);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0
+        }
+
+        .uname {
+            font-size: 12.5px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .urole {
+            font-size: 10px;
+            color: var(--tx3)
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: var(--sw);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: margin var(--tr)
+        }
+
+        .main.nm {
+            margin-left: 0
+        }
+
+        /* TOPBAR */
+        .topbar {
+            height: 62px;
+            background: var(--sf);
+            border-bottom: 1px solid var(--bd);
+            display: flex;
+            align-items: center;
+            padding: 0 26px;
+            gap: 14px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background var(--tr)
+        }
+
+        .tbar-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            flex: 1
+        }
+
+        .tdate {
+            font-size: 12px;
+            color: var(--tx2)
+        }
+
+        /* BTN */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 15px;
+            border-radius: var(--rs);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all var(--tr);
+            font-family: 'DM Sans', sans-serif;
+            white-space: nowrap
+        }
+
+        .bp {
+            background: var(--ac);
+            color: #fff
+        }
+
+        .bp:hover {
+            filter: brightness(1.12);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 18px var(--glow)
+        }
+
+        .bg {
+            background: transparent;
+            color: var(--tx2);
+            border: 1px solid var(--bd2)
+        }
+
+        .bg:hover {
+            background: var(--sf2);
+            color: var(--tx)
+        }
+
+        .ibtn {
+            padding: 7px;
+            border-radius: var(--rs);
+            background: var(--sf2);
+            border: 1px solid var(--bd);
+            cursor: pointer;
+            font-size: 15px;
+            transition: all var(--tr);
+            color: var(--tx2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .ibtn:hover {
+            background: var(--sf3);
+            color: var(--tx)
+        }
+
+        /* PAGE */
+        .page {
+            padding: 26px;
+            flex: 1;
+            overflow-y: auto
+        }
+
+        /* STAT CARDS */
+        .sgrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+            gap: 14px;
+            margin-bottom: 26px
+        }
+
+        .scard {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            padding: 18px;
+            transition: all var(--tr);
+            position: relative;
+            overflow: hidden
+        }
+
+        .scard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: var(--r) var(--r) 0 0
+        }
+
+        .scard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, .14)
+        }
+
+        .sc-sl::before {
+            background: #3b82f6
+        }
+
+        .sc-gy::before {
+            background: #ef4444
+        }
+
+        .sc-st::before {
+            background: #8b5cf6
+        }
+
+        .sc-sc::before {
+            background: linear-gradient(90deg, var(--ac), #ec4899)
+        }
+
+        .sico {
+            font-size: 22px;
+            margin-bottom: 9px
+        }
+
+        .sval {
+            font-family: 'Syne', sans-serif;
+            font-size: 26px;
+            font-weight: 800
+        }
+
+        .slbl {
+            font-size: 11.5px;
+            color: var(--tx2);
+            margin-top: 2px
+        }
+
+        .sch {
+            font-size: 10.5px;
+            color: #10b981;
+            margin-top: 5px
+        }
+
+        .sch.w {
+            color: #f59e0b
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 var(--glow)
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px transparent
+            }
+        }
+
+        .pulse {
+            animation: pulse 2.5s infinite
+        }
+
+        /* PBAR */
+        .pbar {
+            margin-bottom: 14px
+        }
+
+        .pbar-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12.5px;
+            margin-bottom: 5px
+        }
+
+        .pbar-top span:last-child {
+            color: var(--tx2);
+            font-size: 11.5px
+        }
+
+        .pbar-track {
+            height: 7px;
+            background: var(--sf3);
+            border-radius: 99px;
+            overflow: hidden
+        }
+
+        .pbar-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width .8s ease
+        }
+
+        /* CARD */
+        .card {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            overflow: hidden;
+            transition: background var(--tr)
+        }
+
+        .card-head {
+            padding: 16px 22px;
+            border-bottom: 1px solid var(--bd);
+            display: flex;
+            align-items: center;
+            gap: 11px
+        }
+
+        .card-head h3 {
+            font-size: 14.5px;
+            font-weight: 700;
+            flex: 1
+        }
+
+        .card-body {
+            padding: 18px 22px
+        }
+
+        /* TASK ROW */
+        .trow {
+            display: flex;
+            align-items: center;
+            padding: 13px 22px;
+            gap: 12px;
+            border-bottom: 1px solid var(--bd);
+            transition: background var(--tr);
+            cursor: pointer;
+            animation: fup .25s ease both
+        }
+
+        @keyframes fup {
+            from {
+                opacity: 0;
+                transform: translateY(7px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .trow:last-child {
+            border-bottom: none
+        }
+
+        .trow:hover {
+            background: var(--sf2)
+        }
+
+        .trow.done {
+            opacity: .48
+        }
+
+        .trow.done .trn {
+            text-decoration: line-through
+        }
+
+        .chk {
+            width: 19px;
+            height: 19px;
+            border-radius: 5px;
+            border: 2px solid var(--bd2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            transition: all var(--tr);
+            flex-shrink: 0
+        }
+
+        .chk.on {
+            background: var(--ac);
+            border-color: var(--ac);
+            color: #fff
+        }
+
+        .cdot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            flex-shrink: 0
+        }
+
+        .trn {
+            flex: 1;
+            font-size: 13.5px;
+            font-weight: 500
+        }
+
+        .trt {
+            font-size: 11.5px;
+            color: var(--tx2)
+        }
+
+        .trd {
+            font-size: 10.5px;
+            color: var(--tx3);
+            background: var(--sf3);
+            padding: 2px 7px;
+            border-radius: 99px
+        }
+
+        .tacts {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity var(--tr)
+        }
+
+        .trow:hover .tacts {
+            opacity: 1
+        }
+
+        .abt {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 3px 5px;
+            border-radius: 5px;
+            transition: background var(--tr);
+            color: var(--tx2)
+        }
+
+        .abt:hover {
+            background: var(--sf3)
+        }
+
+        /* TIMELINE */
+        .tl-out {
+            display: flex;
+            max-height: 72vh;
+            overflow-y: auto
+        }
+
+        .tl-hrs {
+            display: flex;
+            flex-direction: column;
+            min-width: 50px;
+            border-right: 1px solid var(--bd)
+        }
+
+        .tl-hl {
+            font-size: 9.5px;
+            color: var(--tx3);
+            padding: 0 7px;
+            height: 54px;
+            display: flex;
+            align-items: flex-start;
+            padding-top: 4px;
+            flex-shrink: 0
+        }
+
+        /* MODAL */
+        .ov {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .56);
+            backdrop-filter: blur(7px);
+            z-index: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fdin .18s ease
+        }
+
+        @keyframes fdin {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .modal {
+            background: var(--sf);
+            border: 1px solid var(--bd2);
+            border-radius: var(--r);
+            padding: 26px;
+            width: min(510px, 95vw);
+            max-height: 92vh;
+            overflow-y: auto;
+            animation: pin .24s cubic-bezier(.34, 1.56, .64, 1);
+            transition: background var(--tr)
+        }
+
+        @keyframes pin {
+            from {
+                opacity: 0;
+                transform: scale(.9) translateY(18px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .mtit {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 9px
+        }
+
+        .mcl {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 19px;
+            cursor: pointer;
+            color: var(--tx2);
+            line-height: 1
+        }
+
+        .flbl {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--tx2);
+            margin-bottom: 5px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: .05em
+        }
+
+        .fin {
+            width: 100%;
+            background: var(--sf2);
+            border: 1px solid var(--bd2);
+            border-radius: var(--rs);
+            padding: 9px 13px;
+            font-size: 13.5px;
+            color: var(--tx);
+            font-family: 'DM Sans', sans-serif;
+            transition: all var(--tr);
+            outline: none
+        }
+
+        .fin:focus {
+            border-color: var(--ac);
+            box-shadow: 0 0 0 3px var(--glow)
+        }
+
+        .frow {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        .fg {
+            margin-bottom: 16px
+        }
+
+        .cpick {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px
+        }
+
+        .cch {
+            padding: 5px 12px;
+            border-radius: 99px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all var(--tr);
+            opacity: .58;
+            display: flex;
+            align-items: center;
+            gap: 5px
+        }
+
+        .cch.sel {
+            opacity: 1;
+            transform: scale(1.04)
+        }
+
+        /* WEEK */
+        .wgrid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 9px;
+            margin-bottom: 22px
+        }
+
+        .wday {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            padding: 13px 10px;
+            transition: all var(--tr)
+        }
+
+        .wday:hover {
+            border-color: var(--bd2)
+        }
+
+        .wday.tod {
+            border-color: var(--ac);
+            box-shadow: 0 0 0 1px var(--ac)
+        }
+
+        .wdn {
+            font-size: 9.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--tx3)
+        }
+
+        .wdnum {
+            font-family: 'Syne', sans-serif;
+            font-size: 19px;
+            font-weight: 800;
+            margin: 3px 0 9px
+        }
+
+        .wday.tod .wdnum {
+            color: var(--ac2)
+        }
+
+        .wmb {
+            height: 5px;
+            border-radius: 3px;
+            margin-bottom: 3px;
+            transition: height var(--tr)
+        }
+
+        .wmb:hover {
+            height: 7px
+        }
+
+        .wsc {
+            font-size: 9.5px;
+            color: var(--tx3);
+            margin-top: 7px;
+            text-align: center
+        }
+
+        /* STREAK */
+        .sk-card {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            padding: 17px;
+            text-align: center;
+            transition: all var(--tr)
+        }
+
+        .sk-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(0, 0, 0, .12)
+        }
+
+        .se {
+            font-size: 26px;
+            margin-bottom: 7px
+        }
+
+        .sn {
+            font-family: 'Syne', sans-serif;
+            font-size: 30px;
+            font-weight: 800
+        }
+
+        .sl {
+            font-size: 11px;
+            color: var(--tx2);
+            margin-top: 2px
+        }
+
+        .sdys {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 9px
+        }
+
+        .sd {
+            width: 7px;
+            height: 7px;
+            border-radius: 2px;
+            background: var(--sf3)
+        }
+
+        .sd.on {
+            background: var(--ac)
+        }
+
+        /* AI CARD */
+        .aic {
+            background: linear-gradient(135deg, rgba(108, 99, 255, .11), rgba(236, 72, 153, .07));
+            border: 1px solid rgba(108, 99, 255, .22);
+            border-radius: var(--r);
+            padding: 20px;
+            margin-bottom: 26px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .aic::before {
+            content: '';
+            position: absolute;
+            top: -35px;
+            right: -35px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(108, 99, 255, .18), transparent);
+            border-radius: 50%;
+            pointer-events: none
+        }
+
+        .ait {
+            font-size: 13.5px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 7px
+        }
+
+        .aibg {
+            font-size: 8.5px;
+            font-weight: 700;
+            background: var(--ac);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 99px;
+            letter-spacing: .05em
+        }
+
+        .aitx {
+            font-size: 12.5px;
+            color: var(--tx2);
+            line-height: 1.65
+        }
+
+        /* BARS */
+        .bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 7px;
+            height: 110px
+        }
+
+        .bwrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            height: 100%;
+            justify-content: flex-end
+        }
+
+        .bar {
+            width: 100%;
+            border-radius: 5px 5px 0 0;
+            min-height: 4px;
+            transition: all var(--tr);
+            cursor: pointer
+        }
+
+        .bar:hover {
+            filter: brightness(1.18)
+        }
+
+        .blbl {
+            font-size: 9.5px;
+            color: var(--tx3)
+        }
+
+        /* TOAST */
+        .tw {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            z-index: 400;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            pointer-events: none
+        }
+
+        .toast {
+            background: var(--sf2);
+            border: 1px solid var(--bd2);
+            border-radius: var(--r);
+            padding: 13px 16px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            font-size: 12.5px;
+            min-width: 270px;
+            max-width: 340px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, .22);
+            animation: tsl .3s cubic-bezier(.34, 1.56, .64, 1);
+            pointer-events: all;
+            transition: background var(--tr)
+        }
+
+        @keyframes tsl {
+            from {
+                opacity: 0;
+                transform: translateX(56px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .txico {
+            font-size: 19px;
+            flex-shrink: 0
+        }
+
+        .txbd {
+            flex: 1
+        }
+
+        .txtt {
+            font-weight: 600
+        }
+
+        .txmg {
+            color: var(--tx2);
+            font-size: 11px;
+            margin-top: 1px
+        }
+
+        .txx {
+            cursor: pointer;
+            color: var(--tx3);
+            font-size: 15px;
+            background: none;
+            border: none;
+            padding: 0 0 0 4px;
+            line-height: 1
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 3px;
+            background: var(--sf2);
+            border-radius: var(--rs);
+            padding: 3px
+        }
+
+        .tab {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--tr);
+            color: var(--tx2);
+            border: none;
+            background: none;
+            font-family: 'DM Sans', sans-serif;
+            white-space: nowrap
+        }
+
+        .tab.on {
+            background: var(--sf);
+            color: var(--tx);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .11)
+        }
+
+        /* LAYOUT */
+        .two {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .sec {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 7px
+        }
+
+        .emp {
+            text-align: center;
+            padding: 38px 20px;
+            color: var(--tx3);
+            font-size: 13.5px
+        }
+
+        .empico {
+            font-size: 38px;
+            margin-bottom: 11px
+        }
+
+        /* MOBILE */
+        .mob {
+            display: none
+        }
+
+        .mov {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .5);
+            z-index: 199
+        }
+
+        @media(max-width:768px) {
+            .sidebar {
+                transform: translateX(-100%)
+            }
+
+            .sidebar.open {
+                transform: none;
+                box-shadow: 8px 0 28px rgba(0, 0, 0, .3)
+            }
+
+            .main {
+                margin-left: 0 !important
+            }
+
+            .mob {
+                display: inline-flex
+            }
+
+            .mov.show {
+                display: block
+            }
+
+            .sgrid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .wgrid {
+                grid-template-columns: repeat(4, 1fr)
+            }
+
+            .frow {
+                grid-template-columns: 1fr
+            }
+
+            .topbar {
+                padding: 0 14px
+            }
+
+            .page {
+                padding: 14px
+            }
+
+            .two {
+                grid-template-columns: 1fr
+            }
+
+            .tdate {
+                display: none
+            }
+        }
+
+        @media(max-width:480px) {
+            .sgrid {
+                grid-template-columns: 1fr
+            }
+
+            .wgrid {
+                grid-template-columns: repeat(3, 1fr)
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-presets="react">
+        // ── Destructure hooks from global React (UMD build)
+        var useState = React.useState;
+        var useEffect = React.useEffect;
+        var useRef = React.useRef;
+        var Fragment = React.Fragment;
+
+        // ── Constants ─────────────────────────────────────────────────────────
+        var CATS = [
+            { id: 'sleep', label: 'Sleep', emoji: '\u{1F634}', color: '#3b82f6' },
+            { id: 'class', label: 'Class', emoji: '\u{1F4DA}', color: '#f59e0b' },
+            { id: 'gym', label: 'Gym', emoji: '\u{1F4AA}', color: '#ef4444' },
+            { id: 'sports', label: 'Sports', emoji: '\u26BD', color: '#10b981' },
+            { id: 'study', label: 'Study', emoji: '\u{1F9E0}', color: '#8b5cf6' },
+            { id: 'personal', label: 'Personal', emoji: '\u{1F9FC}', color: '#ec4899' },
+            { id: 'meal', label: 'Meal', emoji: '\u{1F37D}\uFE0F', color: '#f97316' },
+            { id: 'custom', label: 'Custom', emoji: '\u2728', color: '#06b6d4' },
+        ];
+        var CM = {};
+        CATS.forEach(function (c) { CM[c.id] = c; });
+
+        var DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+        var TIPS = [
+            "You've been sleeping under 7 hours — try shifting your sleep 30 min earlier tonight.",
+            "Study sessions all in the evening? Morning study boosts retention by ~23%!",
+            "No gym logged yet this week. Even 20 min keeps your streak alive!",
+            "Great consistent meal schedule — this stabilises energy across the day.",
+            "Add a 10-min wind-down block after gym to improve focus during night study.",
+        ];
+
+        // ── Helpers ───────────────────────────────────────────────────────────
+        function t2m(t) { var p = t.split(':'); return Number(p[0]) * 60 + Number(p[1]); }
+        function m2t(m) { return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
+        function fmt(t) { var p = t.split(':'), h = Number(p[0]), m = Number(p[1]); return (h % 12 || 12) + ':' + String(m).padStart(2, '0') + ' ' + (h >= 12 ? 'PM' : 'AM'); }
+        function dur(s, e) { var d = t2m(e) - t2m(s); return d < 0 ? d + 1440 : d; }
+        function durStr(s, e) { var m = dur(s, e); return m >= 60 ? Math.floor(m / 60) + 'h' + (m % 60 ? ' ' + m % 60 + 'm' : '') : m + 'm'; }
+        function todayStr() { return new Date().toISOString().split('T')[0]; }
+        function todayLabel() { return new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }); }
+        function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+        function makeSeed() {
+            var d = todayStr();
+            return [
+                { id: 't1', name: 'Sleep', category: 'sleep', start: '00:00', end: '06:30', done: true, date: d },
+                { id: 't2', name: 'Morning Jog', category: 'gym', start: '06:30', end: '07:15', done: true, date: d },
+                { id: 't3', name: 'Breakfast', category: 'meal', start: '07:30', end: '08:00', done: true, date: d },
+                { id: 't4', name: 'Math Lecture', category: 'class', start: '09:00', end: '11:00', done: false, date: d },
+                { id: 't5', name: 'CS Lab', category: 'class', start: '11:15', end: '13:00', done: false, date: d },
+                { id: 't6', name: 'Lunch', category: 'meal', start: '13:00', end: '13:30', done: false, date: d },
+                { id: 't7', name: 'Study Session', category: 'study', start: '14:00', end: '16:30', done: false, date: d },
+                { id: 't8', name: 'Cricket', category: 'sports', start: '17:00', end: '18:30', done: false, date: d },
+                { id: 't9', name: 'Gym', category: 'gym', start: '19:00', end: '20:30', done: false, date: d },
+                { id: 't10', name: 'Dinner', category: 'meal', start: '20:30', end: '21:00', done: false, date: d },
+                { id: 't11', name: 'Night Study', category: 'study', start: '21:30', end: '23:00', done: false, date: d },
+                { id: 't12', name: 'Sleep', category: 'sleep', start: '23:30', end: '23:59', done: false, date: d },
+            ];
+        }
+
+        // ── Ring ──────────────────────────────────────────────────────────────
+        function Ring(props) {
+            var pct = props.pct || 0, size = props.size || 72, stroke = props.stroke || 6, color = props.color || '#6c63ff';
+            var r = (size - stroke) / 2, circ = 2 * Math.PI * r;
+            return (
+                <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+                    <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--sf3)" strokeWidth={stroke} />
+                    <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke}
+                        strokeDasharray={circ} strokeDashoffset={circ - (pct / 100) * circ}
+                        strokeLinecap="round" style={{ transition: 'stroke-dashoffset .8s ease' }} />
+                </svg>
+            );
+        }
+
+        // ── PBar ──────────────────────────────────────────────────────────────
+        function PBar(props) {
+            return (
+                <div className="pbar">
+                    <div className="pbar-top"><span>{props.label}</span><span>{props.pct}%</span></div>
+                    <div className="pbar-track">
+                        <div className="pbar-fill" style={{ width: props.pct + '%', background: props.color }} />
+                    </div>
+                </div>
+            );
+        }
+
+        // ── Toast ─────────────────────────────────────────────────────────────
+        function ToastItem(props) {
+            var t = props.t;
+            return (
+                <div className="toast">
+                    <span className="txico">{t.icon || '\uD83D\uDD14'}</span>
+                    <div className="txbd">
+                        <div className="txtt">{t.title}</div>
+                        {t.msg && <div className="txmg">{t.msg}</div>}
+                    </div>
+                    <button className="txx" onClick={function () { props.dismiss(t.id); }}>&#x2715;</button>
+                </div>
+            );
+        }
+
+        // ── Task Modal ────────────────────────────────────────────────────────
+        function TaskModal(props) {
+            var init = props.task || { name: '', category: 'study', start: '09:00', end: '10:00', date: todayStr() };
+            var stateArr = useState(init);
+            var f = stateArr[0], setF = stateArr[1];
+
+            function set(k, v) { setF(function (p) { var n = Object.assign({}, p); n[k] = v; return n; }); }
+
+            function submit() {
+                if (!f.name.trim()) return;
+                props.onSave(Object.assign({}, f, { id: props.task ? props.task.id : uid(), done: props.task ? props.task.done : false }));
+                props.onClose();
+            }
+
+            return (
+                <div className="ov" onClick={function (e) { if (e.target === e.currentTarget) props.onClose(); }}>
+                    <div className="modal">
+                        <div className="mtit">
+                            {props.task ? '\u270F\uFE0F Edit Task' : '\u2795 New Task'}
+                            <button className="mcl" onClick={props.onClose}>&#x2715;</button>
+                        </div>
+
+                        <div className="fg">
+                            <label className="flbl">Task Name</label>
+                            <input className="fin" placeholder="e.g. Morning Run" value={f.name}
+                                onChange={function (e) { set('name', e.target.value); }} />
+                        </div>
+
+                        <div className="fg">
+                            <label className="flbl">Category</label>
+                            <div className="cpick">
+                                {CATS.map(function (c) {
+                                    return (
+                                        <div key={c.id}
+                                            className={'cch' + (f.category === c.id ? ' sel' : '')}
+                                            style={{ background: c.color + '20', color: c.color, borderColor: f.category === c.id ? c.color : 'transparent' }}
+                                            onClick={function () { set('category', c.id); }}>
+                                            {c.emoji} {c.label}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="frow">
+                            <div className="fg" style={{ marginBottom: 0 }}>
+                                <label className="flbl">Start</label>
+                                <input type="time" className="fin" value={f.start} onChange={function (e) { set('start', e.target.value); }} />
+                            </div>
+                            <div className="fg" style={{ marginBottom: 0 }}>
+                                <label className="flbl">End</label>
+                                <input type="time" className="fin" value={f.end} onChange={function (e) { set('end', e.target.value); }} />
+                            </div>
+                        </div>
+
+                        <div className="fg" style={{ marginTop: 16 }}>
+                            <label className="flbl">Date</label>
+                            <input type="date" className="fin" value={f.date} onChange={function (e) { set('date', e.target.value); }} />
+                        </div>
+
+                        <div style={{ display: 'flex', gap: 9, marginTop: 22 }}>
+                            <button className="btn bg" style={{ flex: 1 }} onClick={props.onClose}>Cancel</button>
+                            <button className="btn bp" style={{ flex: 1 }} onClick={submit}>
+                                {props.task ? 'Save Changes' : 'Add Task'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // ── Dashboard ─────────────────────────────────────────────────────────
+        function Dashboard(props) {
+            var tasks = props.tasks, toggle = props.toggle, onEdit = props.onEdit, onDel = props.onDel, openAdd = props.openAdd;
+            var td = tasks.filter(function (t) { return t.date === todayStr(); }).sort(function (a, b) { return t2m(a.start) - t2m(b.start); });
+            var done = td.filter(function (t) { return t.done; }).length;
+            var total = td.length;
+            var pct = total ? Math.round(done / total * 100) : 0;
+            var score = Math.min(100, Math.round(pct * .6 + td.filter(function (t) { return ['gym', 'study', 'class'].indexOf(t.category) > -1 && t.done; }).length * 8));
+            var tip = TIPS[new Date().getMinutes() % TIPS.length];
+
+            var catBreak = CATS.map(function (c) {
+                return Object.assign({}, c, { mins: td.filter(function (t) { return t.category === c.id; }).reduce(function (a, t) { return a + dur(t.start, t.end); }, 0) });
+            }).filter(function (c) { return c.mins > 0; });
+
+            return (
+                <div className="page">
+                    <div className="aic">
+                        <div className="ait">\uD83E\uDD16 AI Suggestion <span className="aibg">SMART</span></div>
+                        <div className="aitx">{tip}</div>
+                    </div>
+
+                    <div className="sgrid">
+                        <div className="scard sc-sc pulse">
+                            <div className="sico">\u26A1</div>
+                            <div className="sval">{score}</div>
+                            <div className="slbl">Productivity Score</div>
+                            <div className="sch">\u2191 Great day so far!</div>
+                        </div>
+                        <div className="scard sc-sl">
+                            <div className="sico">\uD83D\uDE34</div>
+                            <div className="sval">6.5h</div>
+                            <div className="slbl">Sleep Last Night</div>
+                            <div className="sch w">\u26A0 Below 7h target</div>
+                        </div>
+                        <div className="scard sc-gy">
+                            <div className="sico">\u2705</div>
+                            <div className="sval">{done}/{total}</div>
+                            <div className="slbl">Tasks Completed</div>
+                            <div className="sch">\uD83D\uDD25 Keep going!</div>
+                        </div>
+                        <div className="scard sc-st">
+                            <div className="sico">\uD83D\uDCCA</div>
+                            <div className="sval">{pct}%</div>
+                            <div className="slbl">Day Progress</div>
+                            <div className="sch">\u2191 On track</div>
+                        </div>
+                    </div>
+
+                    <div className="two" style={{ marginBottom: 22 }}>
+                        <div className="card">
+                            <div className="card-head">
+                                <h3>\uD83D\uDCCA Today's Progress</h3>
+                                <div style={{ position: 'relative', width: 64, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Ring pct={pct} size={64} stroke={5} />
+                                    <div style={{ position: 'absolute', textAlign: 'center' }}>
+                                        <div style={{ fontFamily: 'Syne,sans-serif', fontWeight: 800, fontSize: 14 }}>{pct}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="card-body">
+                                {catBreak.length === 0
+                                    ? <div style={{ color: 'var(--tx3)', fontSize: 13 }}>No tasks yet today.</div>
+                                    : catBreak.map(function (c) {
+                                        return <PBar key={c.id} label={c.emoji + ' ' + c.label} pct={Math.min(100, Math.round(c.mins / 480 * 100))} color={c.color} />;
+                                    })
+                                }
+                            </div>
+                        </div>
+
+                        <div className="card">
+                            <div className="card-head"><h3>\uD83D\uDD25 Habit Streaks</h3></div>
+                            <div className="card-body">
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 11 }}>
+                                    {[
+                                        { e: '\uD83D\uDCAA', n: 7, l: 'Gym', days: [1, 1, 1, 1, 1, 1, 0], c: '#ef4444' },
+                                        { e: '\uD83E\uDDE0', n: 12, l: 'Study', days: [1, 1, 0, 1, 1, 1, 1], c: '#8b5cf6' },
+                                        { e: '\uD83D\uDE34', n: 3, l: 'Sleep', days: [1, 1, 1, 0, 0, 1, 1], c: '#3b82f6' },
+                                    ].map(function (s) {
+                                        return (
+                                            <div key={s.l} className="sk-card">
+                                                <div className="se">{s.e}</div>
+                                                <div className="sn" style={{ color: s.c }}>{s.n}</div>
+                                                <div className="sl">{s.l}</div>
+                                                <div className="sdys">
+                                                    {s.days.map(function (d, i) { return <div key={i} className={'sd' + (d ? ' on' : '')} style={d ? { background: s.c } : {}} />; })}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="card">
+                        <div className="card-head">
+                            <h3>\uD83D\uDCCB Today's Routine</h3>
+                            <span style={{ fontSize: 12, color: 'var(--tx2)' }}>{done}/{total} done</span>
+                            <button className="btn bp" style={{ marginLeft: 'auto' }} onClick={openAdd}>+ Add Task</button>
+                        </div>
+                        {td.length === 0
+                            ? <div className="emp"><div className="empico">\uD83D\uDCED</div>No tasks yet — add your first!</div>
+                            : td.map(function (t) {
+                                var c = CM[t.category] || CM.custom;
+                                return (
+                                    <div key={t.id} className={'trow' + (t.done ? ' done' : '')} onClick={function () { toggle(t.id); }}>
+                                        <div className={'chk' + (t.done ? ' on' : '')}>{t.done ? '\u2713' : ''}</div>
+                                        <div className="cdot" style={{ background: c.color }} />
+                                        <span className="trn">{t.name}</span>
+                                        <span className="trt">{fmt(t.start)}</span>
+                                        <span className="trd">{durStr(t.start, t.end)}</span>
+                                        <div className="tacts" onClick={function (e) { e.stopPropagation(); }}>
+                                            <button className="abt" onClick={function () { onEdit(t); }}>\u270F\uFE0F</button>
+                                            <button className="abt" onClick={function () { onDel(t.id); }}>\uD83D\uDDD1\uFE0F</button>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        }
+                    </div>
+                </div>
+            );
+        }
+
+        // ── Timeline Page ─────────────────────────────────────────────────────
+        function TimelinePage(props) {
+            var tasks = props.tasks, toggle = props.toggle, openAdd = props.openAdd;
+            var td = tasks.filter(function (t) { return t.date === todayStr(); });
+            var now = new Date();
+            var nowMin = now.getHours() * 60 + now.getMinutes();
+            var PX = 54;
+
+            return (
+                <div className="page">
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 18 }}>
+                        <div className="sec" style={{ marginBottom: 0 }}>\u23F1 Day Timeline</div>
+                        <button className="btn bp" style={{ marginLeft: 'auto' }} onClick={openAdd}>+ Block</button>
+                    </div>
+                    <div className="card">
+                        <div className="tl-out">
+                            <div className="tl-hrs">
+                                {Array.from({ length: 24 }, function (_, h) {
+                                    return <div key={h} className="tl-hl">{h === 0 ? '12am' : h < 12 ? h + 'am' : h === 12 ? '12pm' : (h - 12) + 'pm'}</div>;
+                                })}
+                            </div>
+                            <div style={{ flex: 1, position: 'relative', minHeight: 24 * PX + 'px' }}>
+                                {Array.from({ length: 24 }, function (_, h) {
+                                    return <div key={h} style={{ position: 'absolute', top: h * PX, left: 0, right: 0, height: PX, borderBottom: '1px dashed var(--bd)' }} />;
+                                })}
+                                <div style={{ position: 'absolute', top: nowMin * (PX / 60) + 'px', left: 0, right: 0, zIndex: 5, display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
+                                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444', marginLeft: -4, flexShrink: 0 }} />
+                                    <div style={{ flex: 1, height: '1.5px', background: '#ef4444', opacity: .7 }} />
+                                    <span style={{ fontSize: 9, color: '#ef4444', paddingRight: 8, fontWeight: 700 }}>{m2t(nowMin)}</span>
+                                </div>
+                                {td.map(function (t) {
+                                    var c = CM[t.category] || CM.custom;
+                                    var top = t2m(t.start) * (PX / 60);
+                                    var h = Math.max(dur(t.start, t.end) * (PX / 60), 24);
+                                    return (
+                                        <div key={t.id} onClick={function () { toggle(t.id); }} style={{
+                                            position: 'absolute', top: top + 'px', left: 8, right: 8, height: h + 'px',
+                                            background: c.color + '22', borderLeft: '3px solid ' + c.color,
+                                            borderRadius: 7, padding: '3px 10px', display: 'flex', alignItems: 'center',
+                                            gap: 7, fontSize: 11.5, fontWeight: 600, cursor: 'pointer',
+                                            opacity: t.done ? .45 : 1, overflow: 'hidden', zIndex: 2,
+                                        }}>
+                                            <span>{c.emoji}</span>
+                                            <span style={{ flex: 1, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{t.name}</span>
+                                            <span style={{ fontSize: 9.5, color: 'var(--tx2)', flexShrink: 0 }}>{fmt(t.start)}</span>
+                                        </div>
+                                    );
+                                })}
+                                {td.length === 0 && <div className="emp" style={{ paddingTop: 80 }}><div className="empico">\uD83D\uDCC5</div>No blocks scheduled.</div>}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // ── Week Page ─────────────────────────────────────────────────────────
+        function WeekPage(props) {
+            var tasks = props.tasks;
+            var today = new Date();
+            var dow = today.getDay();
+            var week = Array.from({ length: 7 }, function (_, i) {
+                var d = new Date(today); d.setDate(today.getDate() - dow + i); return d;
+            });
+            var ts = todayStr();
+
+            return (
+                <div className="page">
+                    <div className="sec">\uD83D\uDCC5 Weekly Overview</div>
+                    <div className="wgrid">
+                        {week.map(function (d, i) {
+                            var ds = d.toISOString().split('T')[0];
+                            var dt = tasks.filter(function (t) { return t.date === ds; }).sort(function (a, b) { return t2m(a.start) - t2m(b.start); });
+                            var dn = dt.filter(function (t) { return t.done; }).length;
+                            return (
+                                <div key={i} className={'wday' + (ds === ts ? ' tod' : '')}>
+                                    <div className="wdn">{DAYS[d.getDay()]}</div>
+                                    <div className="wdnum">{d.getDate()}</div>
+                                    {dt.slice(0, 6).map(function (t) {
+                                        return <div key={t.id} className="wmb" style={{ background: (CM[t.category] || CM.custom).color, opacity: t.done ? .4 : .85 }} title={t.name} />;
+                                    })}
+                                    {dt.length > 6 && <div style={{ fontSize: 9, color: 'var(--tx3)', marginTop: 2 }}>+{dt.length - 6}</div>}
+                                    {dt.length > 0 && <div className="wsc">{Math.round(dn / dt.length * 100)}%</div>}
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    <div className="card">
+                        <div className="card-head"><h3>\uD83D\uDCC8 Category Breakdown (This Week)</h3></div>
+                        <div className="card-body">
+                            <div className="bars">
+                                {CATS.map(function (c) {
+                                    var mins = tasks.filter(function (t) { return t.category === c.id; }).reduce(function (a, t) { return a + dur(t.start, t.end); }, 0);
+                                    var h = Math.min(100, (mins / 600) * 100);
+                                    return (
+                                        <div key={c.id} className="bwrap" title={Math.round(mins / 60 * 10) / 10 + 'h'}>
+                                            <div className="bar" style={{ height: Math.max(h, 4) + '%', background: c.color }} />
+                                            <div className="blbl">{c.emoji}</div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 9, marginTop: 11 }}>
+                                {CATS.map(function (c) {
+                                    return (
+                                        <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11.5, color: 'var(--tx2)' }}>
+                                            <div style={{ width: 8, height: 8, borderRadius: 2, background: c.color, flexShrink: 0 }} />
+                                            {c.label}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // ── All Tasks ─────────────────────────────────────────────────────────
+        function AllTasksPage(props) {
+            var tasks = props.tasks, toggle = props.toggle, onEdit = props.onEdit, onDel = props.onDel, openAdd = props.openAdd;
+            var fa = useState('all');
+            var filter = fa[0], setFilter = fa[1];
+
+            var list = (filter === 'all' ? tasks : tasks.filter(function (t) { return t.category === filter; }))
+                .slice().sort(function (a, b) { return a.date.localeCompare(b.date) || t2m(a.start) - t2m(b.start); });
+
+            return (
+                <div className="page">
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16, gap: 12 }}>
+                        <div className="sec" style={{ marginBottom: 0 }}>\uD83D\uDCCB All Tasks</div>
+                        <button className="btn bp" style={{ marginLeft: 'auto' }} onClick={openAdd}>+ Add Task</button>
+                    </div>
+                    <div style={{ overflowX: 'auto', marginBottom: 16 }}>
+                        <div className="tabs" style={{ width: 'max-content' }}>
+                            <button className={'tab' + (filter === 'all' ? ' on' : '')} onClick={function () { setFilter('all'); }}>All</button>
+                            {CATS.map(function (c) {
+                                return <button key={c.id} className={'tab' + (filter === c.id ? ' on' : '')} onClick={function () { setFilter(c.id); }}>{c.emoji} {c.label}</button>;
+                            })}
+                        </div>
+                    </div>
+                    <div className="card">
+                        {list.length === 0
+                            ? <div className="emp"><div className="empico">\uD83D\uDCED</div>No tasks found.</div>
+                            : list.map(function (t) {
+                                var c = CM[t.category] || CM.custom;
+                                return (
+                                    <div key={t.id} className={'trow' + (t.done ? ' done' : '')} onClick={function () { toggle(t.id); }}>
+                                        <div className={'chk' + (t.done ? ' on' : '')}>{t.done ? '\u2713' : ''}</div>
+                                        <div className="cdot" style={{ background: c.color }} />
+                                        <span className="trn">{t.name}</span>
+                                        <span style={{ fontSize: 10.5, color: 'var(--tx3)', marginRight: 2 }}>{t.date}</span>
+                                        <span className="trt">{fmt(t.start)}</span>
+                                        <span className="trd">{durStr(t.start, t.end)}</span>
+                                        <div className="tacts" onClick={function (e) { e.stopPropagation(); }}>
+                                            <button className="abt" onClick={function () { onEdit(t); }}>\u270F\uFE0F</button>
+                                            <button className="abt" onClick={function () { onDel(t.id); }}>\uD83D\uDDD1\uFE0F</button>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        }
+                    </div>
+                </div>
+            );
+        }
+
+        // ── Streaks Page ──────────────────────────────────────────────────────
+        function StreaksPage() {
+            var data = [
+                { e: '\uD83D\uDCAA', n: 7, l: 'Gym', c: '#ef4444', best: 14, days: [1, 1, 1, 1, 1, 1, 0] },
+                { e: '\uD83E\uDDE0', n: 12, l: 'Study', c: '#8b5cf6', best: 20, days: [1, 1, 0, 1, 1, 1, 1] },
+                { e: '\uD83D\uDE34', n: 3, l: 'Sleep', c: '#3b82f6', best: 30, days: [1, 1, 1, 0, 0, 1, 1] },
+                { e: '\uD83D\uDCDA', n: 5, l: 'Classes', c: '#f59e0b', best: 10, days: [1, 0, 1, 1, 1, 1, 0] },
+                { e: '\u26BD', n: 2, l: 'Sports', c: '#10b981', best: 8, days: [0, 1, 1, 0, 0, 0, 0] },
+                { e: '\uD83C\uDF7D\uFE0F', n: 21, l: 'Meals', c: '#f97316', best: 45, days: [1, 1, 1, 1, 1, 1, 1] },
+            ];
+            return (
+                <div className="page">
+                    <div className="sec">\uD83D\uDD25 Habit Streaks</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(155px,1fr))', gap: 13, marginBottom: 22 }}>
+                        {data.map(function (s) {
+                            return (
+                                <div key={s.l} className="sk-card">
+                                    <div className="se">{s.e}</div>
+                                    <div className="sn" style={{ color: s.c }}>{s.n}</div>
+                                    <div className="sl">{s.l} Streak</div>
+                                    <div style={{ fontSize: 10.5, color: 'var(--tx3)', marginTop: 3 }}>Best: {s.best} days</div>
+                                    <div className="sdys" style={{ marginTop: 10 }}>
+                                        {DAYS.map(function (d, i) {
+                                            return (
+                                                <div key={i} title={d} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+                                                    <div className={'sd' + (s.days[i] ? ' on' : '')} style={s.days[i] ? { background: s.c } : {}} />
+                                                    <div style={{ fontSize: 7.5, color: 'var(--tx3)' }}>{d[0]}</div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="card">
+                        <div className="card-head"><h3>\uD83D\uDCCA Weekly Completion Rate</h3></div>
+                        <div className="card-body">
+                            {data.map(function (s) {
+                                return <PBar key={s.l} label={s.e + ' ' + s.l} pct={Math.round(s.days.filter(Boolean).length / 7 * 100)} color={s.c} />;
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // ── App Root ──────────────────────────────────────────────────────────
+        function App() {
+            var da = useState(true); var dark = da[0], setDark = da[1];
+            var pa = useState('dashboard'); var page = pa[0], setPage = pa[1];
+            var ta = useState(makeSeed); var tasks = ta[0], setTasks = ta[1];
+            var ma = useState(null); var modal = ma[0], setModal = ma[1];
+            var toa = useState([]); var toasts = toa[0], setToasts = toa[1];
+            var sa = useState(false); var sideOpen = sa[0], setSideOpen = sa[1];
+
+            useEffect(function () {
+                document.documentElement.className = dark ? '' : 'light';
+            }, [dark]);
+
+            useEffect(function () {
+                var id = setTimeout(function () {
+                    addToast({ icon: '\u23F0', title: 'Class starting soon!', msg: 'Math Lecture in 15 minutes' });
+                }, 2500);
+                return function () { clearTimeout(id); };
+            }, []);
+
+            function addToast(t) {
+                var id = uid();
+                setToasts(function (p) { return p.concat([Object.assign({}, t, { id: id })]); });
+                setTimeout(function () { setToasts(function (p) { return p.filter(function (x) { return x.id !== id; }); }); }, 5000);
+            }
+            function dismiss(id) { setToasts(function (p) { return p.filter(function (t) { return t.id !== id; }); }); }
+
+            function toggle(id) {
+                var t = tasks.find(function (x) { return x.id === id; });
+                setTasks(function (p) { return p.map(function (x) { return x.id === id ? Object.assign({}, x, { done: !x.done }) : x; }); });
+                if (t && !t.done) addToast({ icon: '\u2705', title: 'Task complete!', msg: t.name });
+            }
+            function saveTask(t) {
+                var exists = tasks.find(function (x) { return x.id === t.id; });
+                if (exists) setTasks(function (p) { return p.map(function (x) { return x.id === t.id ? t : x; }); });
+                else setTasks(function (p) { return p.concat([t]); });
+                addToast({ icon: exists ? '\uD83D\uDCBE' : '\u2795', title: exists ? 'Task updated!' : 'Task added!', msg: t.name });
+            }
+            function delTask(id) {
+                var t = tasks.find(function (x) { return x.id === id; });
+                setTasks(function (p) { return p.filter(function (x) { return x.id !== id; }); });
+                if (t) addToast({ icon: '\uD83D\uDDD1\uFE0F', title: 'Deleted', msg: t.name });
+            }
+
+            var NAV = [
+                { id: 'dashboard', icon: '\uD83C\uDFE0', label: 'Dashboard' },
+                { id: 'timeline', icon: '\u23F1', label: 'Timeline' },
+                {
+                    id: 'tasks', icon: '\uD83D\uDCCB', label: 'All Tasks',
+                    badge: tasks.filter(function (t) { return !t.done && t.date === todayStr(); }).length || null
+                },
+                { id: 'week', icon: '\uD83D\uDCC5', label: 'Weekly View' },
+                { id: 'streaks', icon: '\uD83D\uDD25', label: 'Streaks' },
+            ];
+            var cur = NAV.find(function (n) { return n.id === page; }) || NAV[0];
+
+            return (
+                <Fragment>
+                    <div className={'mov' + (sideOpen ? ' show' : '')} onClick={function () { setSideOpen(false); }} />
+
+                    <aside className={'sidebar' + (sideOpen ? ' open' : '')}>
+                        <div className="logo">
+                            <div className="logo-icon">\u26A1</div>
+                            <div>
+                                <div className="logo-name">Daily Routine</div>
+                                <div className="logo-sub">Manager</div>
+                            </div>
+                        </div>
+
+                        <div className="nlbl">Menu</div>
+                        {NAV.map(function (n) {
+                            return (
+                                <div key={n.id} className={'ni-row' + (page === n.id ? ' act' : '')}
+                                    onClick={function () { setPage(n.id); setSideOpen(false); }}>
+                                    <span className="ic">{n.icon}</span>
+                                    {n.label}
+                                    {n.badge ? <span className="nbadge">{n.badge}</span> : null}
+                                </div>
+                            );
+                        })}
+
+                        <div className="nlbl" style={{ marginTop: 12 }}>Settings</div>
+                        <div className="ni-row" onClick={function () { setDark(function (d) { return !d; }); }}>
+                            <span className="ic">{dark ? '\u2600\uFE0F' : '\uD83C\uDF19'}</span>
+                            {dark ? 'Light Mode' : 'Dark Mode'}
+                        </div>
+                        <div className="ni-row" onClick={function () { addToast({ icon: '\uD83D\uDCE4', title: 'PDF Exported!', msg: 'Your routine has been saved.' }); }}>
+                            <span className="ic">\uD83D\uDCE4</span>Export PDF
+                        </div>
+
+                        <div className="sfooter">
+                            <div className="uchip">
+                                <div className="av">S</div>
+                                <div>
+                                    <div className="uname">Subham Sethy</div>
+                                    <div className="urole">Student \u00B7 Bhubaneswar</div>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <div className="main">
+                        <div className="topbar">
+                            <button className="ibtn mob" onClick={function () { setSideOpen(function (o) { return !o; }); }}>\u2630</button>
+                            <div className="tbar-title">{cur.icon} {cur.label}</div>
+                            <span className="tdate">{todayLabel()}</span>
+                            <button className="ibtn" onClick={function () { setDark(function (d) { return !d; }); }}>{dark ? '\u2600\uFE0F' : '\uD83C\uDF19'}</button>
+                            <button className="btn bp" onClick={function () { setModal('add'); }}>+ Add Task</button>
+                        </div>
+
+                        {page === 'dashboard' && <Dashboard tasks={tasks} toggle={toggle} onEdit={setModal} onDel={delTask} openAdd={function () { setModal('add'); }} />}
+                        {page === 'timeline' && <TimelinePage tasks={tasks} toggle={toggle} openAdd={function () { setModal('add'); }} />}
+                        {page === 'tasks' && <AllTasksPage tasks={tasks} toggle={toggle} onEdit={setModal} onDel={delTask} openAdd={function () { setModal('add'); }} />}
+                        {page === 'week' && <WeekPage tasks={tasks} />}
+                        {page === 'streaks' && <StreaksPage />}
+                    </div>
+
+                    {modal && (
+                        <TaskModal
+                            task={modal === 'add' ? null : modal}
+                            onSave={saveTask}
+                            onClose={function () { setModal(null); }}
+                        />
+                    )}
+
+                    <div className="tw">
+                        {toasts.map(function (t) { return <ToastItem key={t.id} t={t} dismiss={dismiss} />; })}
+                    </div>
+                </Fragment>
+            );
+        }
+
+        // Mount app
+        ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+    </script>
+</body>
+
+</html>
