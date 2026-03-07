@@ -1168,14 +1168,14 @@
 
         // ── Constants ─────────────────────────────────────────────────────────
         var CATS = [
-            { id: 'sleep', label: 'Sleep', emoji: '\u{1F634}', color: '#3b82f6' },
-            { id: 'class', label: 'Class', emoji: '\u{1F4DA}', color: '#f59e0b' },
-            { id: 'gym', label: 'Gym', emoji: '\u{1F4AA}', color: '#ef4444' },
-            { id: 'sports', label: 'Sports', emoji: '\u26BD', color: '#10b981' },
-            { id: 'study', label: 'Study', emoji: '\u{1F9E0}', color: '#8b5cf6' },
-            { id: 'personal', label: 'Personal', emoji: '\u{1F9FC}', color: '#ec4899' },
-            { id: 'meal', label: 'Meal', emoji: '\u{1F37D}\uFE0F', color: '#f97316' },
-            { id: 'custom', label: 'Custom', emoji: '\u2728', color: '#06b6d4' },
+            { id: 'sleep', label: 'Sleep', emoji: '😴', color: '#3b82f6' },
+            { id: 'class', label: 'Class', emoji: '📚', color: '#f59e0b' },
+            { id: 'gym', label: 'Gym', emoji: '💪', color: '#ef4444' },
+            { id: 'sports', label: 'Sports', emoji: '⚽', color: '#10b981' },
+            { id: 'study', label: 'Study', emoji: '🧠', color: '#8b5cf6' },
+            { id: 'personal', label: 'Personal', emoji: '🧼', color: '#ec4899' },
+            { id: 'meal', label: 'Meal', emoji: '🍽️', color: '#f97316' },
+            { id: 'custom', label: 'Custom', emoji: '✨', color: '#06b6d4' },
         ];
         var CM = {};
         CATS.forEach(function (c) { CM[c.id] = c; });
@@ -1249,7 +1249,7 @@
             var t = props.t;
             return (
                 <div className="toast">
-                    <span className="txico">{t.icon || '\uD83D\uDD14'}</span>
+                    <span className="txico">{t.icon || '🔔'}</span>
                     <div className="txbd">
                         <div className="txtt">{t.title}</div>
                         {t.msg && <div className="txmg">{t.msg}</div>}
@@ -1277,7 +1277,7 @@
                 <div className="ov" onClick={function (e) { if (e.target === e.currentTarget) props.onClose(); }}>
                     <div className="modal">
                         <div className="mtit">
-                            {props.task ? '\u270F\uFE0F Edit Task' : '\u2795 New Task'}
+                            {props.task ? '✏️ Edit Task' : '➕ New Task'}
                             <button className="mcl" onClick={props.onClose}>&#x2715;</button>
                         </div>
 
@@ -1347,41 +1347,41 @@
             return (
                 <div className="page">
                     <div className="aic">
-                        <div className="ait">\uD83E\uDD16 AI Suggestion <span className="aibg">SMART</span></div>
+                        <div className="ait">🤖 AI Suggestion <span className="aibg">SMART</span></div>
                         <div className="aitx">{tip}</div>
                     </div>
 
                     <div className="sgrid">
                         <div className="scard sc-sc pulse">
-                            <div className="sico">\u26A1</div>
+                            <div className="sico">⚡</div>
                             <div className="sval">{score}</div>
                             <div className="slbl">Productivity Score</div>
-                            <div className="sch">\u2191 Great day so far!</div>
+                            <div className="sch">↑ Great day so far!</div>
                         </div>
                         <div className="scard sc-sl">
-                            <div className="sico">\uD83D\uDE34</div>
+                            <div className="sico">😴</div>
                             <div className="sval">6.5h</div>
                             <div className="slbl">Sleep Last Night</div>
-                            <div className="sch w">\u26A0 Below 7h target</div>
+                            <div className="sch w">⚠ Below 7h target</div>
                         </div>
                         <div className="scard sc-gy">
-                            <div className="sico">\u2705</div>
+                            <div className="sico">✅</div>
                             <div className="sval">{done}/{total}</div>
                             <div className="slbl">Tasks Completed</div>
-                            <div className="sch">\uD83D\uDD25 Keep going!</div>
+                            <div className="sch">🔥 Keep going!</div>
                         </div>
                         <div className="scard sc-st">
-                            <div className="sico">\uD83D\uDCCA</div>
+                            <div className="sico">📊</div>
                             <div className="sval">{pct}%</div>
                             <div className="slbl">Day Progress</div>
-                            <div className="sch">\u2191 On track</div>
+                            <div className="sch">↑ On track</div>
                         </div>
                     </div>
 
                     <div className="two" style={{ marginBottom: 22 }}>
                         <div className="card">
                             <div className="card-head">
-                                <h3>\uD83D\uDCCA Today's Progress</h3>
+                                <h3>📊 Today's Progress</h3>
                                 <div style={{ position: 'relative', width: 64, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Ring pct={pct} size={64} stroke={5} />
                                     <div style={{ position: 'absolute', textAlign: 'center' }}>
@@ -1400,13 +1400,13 @@
                         </div>
 
                         <div className="card">
-                            <div className="card-head"><h3>\uD83D\uDD25 Habit Streaks</h3></div>
+                            <div className="card-head"><h3>🔥 Habit Streaks</h3></div>
                             <div className="card-body">
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 11 }}>
                                     {[
-                                        { e: '\uD83D\uDCAA', n: 7, l: 'Gym', days: [1, 1, 1, 1, 1, 1, 0], c: '#ef4444' },
-                                        { e: '\uD83E\uDDE0', n: 12, l: 'Study', days: [1, 1, 0, 1, 1, 1, 1], c: '#8b5cf6' },
-                                        { e: '\uD83D\uDE34', n: 3, l: 'Sleep', days: [1, 1, 1, 0, 0, 1, 1], c: '#3b82f6' },
+                                        { e: '💪', n: 7, l: 'Gym', days: [1, 1, 1, 1, 1, 1, 0], c: '#ef4444' },
+                                        { e: '🧠', n: 12, l: 'Study', days: [1, 1, 0, 1, 1, 1, 1], c: '#8b5cf6' },
+                                        { e: '😴', n: 3, l: 'Sleep', days: [1, 1, 1, 0, 0, 1, 1], c: '#3b82f6' },
                                     ].map(function (s) {
                                         return (
                                             <div key={s.l} className="sk-card">
@@ -1426,24 +1426,24 @@
 
                     <div className="card">
                         <div className="card-head">
-                            <h3>\uD83D\uDCCB Today's Routine</h3>
+                            <h3>📋 Today's Routine</h3>
                             <span style={{ fontSize: 12, color: 'var(--tx2)' }}>{done}/{total} done</span>
                             <button className="btn bp" style={{ marginLeft: 'auto' }} onClick={openAdd}>+ Add Task</button>
                         </div>
                         {td.length === 0
-                            ? <div className="emp"><div className="empico">\uD83D\uDCED</div>No tasks yet — add your first!</div>
+                            ? <div className="emp"><div className="empico">📭</div>No tasks yet — add your first!</div>
                             : td.map(function (t) {
                                 var c = CM[t.category] || CM.custom;
                                 return (
                                     <div key={t.id} className={'trow' + (t.done ? ' done' : '')} onClick={function () { toggle(t.id); }}>
-                                        <div className={'chk' + (t.done ? ' on' : '')}>{t.done ? '\u2713' : ''}</div>
+                                        <div className={'chk' + (t.done ? ' on' : '')}>{t.done ? '✓' : ''}</div>
                                         <div className="cdot" style={{ background: c.color }} />
                                         <span className="trn">{t.name}</span>
                                         <span className="trt">{fmt(t.start)}</span>
                                         <span className="trd">{durStr(t.start, t.end)}</span>
                                         <div className="tacts" onClick={function (e) { e.stopPropagation(); }}>
-                                            <button className="abt" onClick={function () { onEdit(t); }}>\u270F\uFE0F</button>
-                                            <button className="abt" onClick={function () { onDel(t.id); }}>\uD83D\uDDD1\uFE0F</button>
+                                            <button className="abt" onClick={function () { onEdit(t); }}>✏️</button>
+                                            <button className="abt" onClick={function () { onDel(t.id); }}>🗑️</button>
                                         </div>
                                     </div>
                                 );
@@ -1465,7 +1465,7 @@
             return (
                 <div className="page">
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: 18 }}>
-                        <div className="sec" style={{ marginBottom: 0 }}>\u23F1 Day Timeline</div>
+                        <div className="sec" style={{ marginBottom: 0 }}>⏱ Day Timeline</div>
                         <button className="btn bp" style={{ marginLeft: 'auto' }} onClick={openAdd}>+ Block</button>
                     </div>
                     <div className="card">
@@ -1502,7 +1502,7 @@
                                         </div>
                                     );
                                 })}
-                                {td.length === 0 && <div className="emp" style={{ paddingTop: 80 }}><div className="empico">\uD83D\uDCC5</div>No blocks scheduled.</div>}
+                                {td.length === 0 && <div className="emp" style={{ paddingTop: 80 }}><div className="empico">📅</div>No blocks scheduled.</div>}
                             </div>
                         </div>
                     </div>
@@ -1522,7 +1522,7 @@
 
             return (
                 <div className="page">
-                    <div className="sec">\uD83D\uDCC5 Weekly Overview</div>
+                    <div className="sec">📅 Weekly Overview</div>
                     <div className="wgrid">
                         {week.map(function (d, i) {
                             var ds = d.toISOString().split('T')[0];
@@ -1543,7 +1543,7 @@
                     </div>
 
                     <div className="card">
-                        <div className="card-head"><h3>\uD83D\uDCC8 Category Breakdown (This Week)</h3></div>
+                        <div className="card-head"><h3>📈 Category Breakdown (This Week)</h3></div>
                         <div className="card-body">
                             <div className="bars">
                                 {CATS.map(function (c) {
@@ -1585,7 +1585,7 @@
             return (
                 <div className="page">
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16, gap: 12 }}>
-                        <div className="sec" style={{ marginBottom: 0 }}>\uD83D\uDCCB All Tasks</div>
+                        <div className="sec" style={{ marginBottom: 0 }}>📋 All Tasks</div>
                         <button className="btn bp" style={{ marginLeft: 'auto' }} onClick={openAdd}>+ Add Task</button>
                     </div>
                     <div style={{ overflowX: 'auto', marginBottom: 16 }}>
@@ -1598,20 +1598,20 @@
                     </div>
                     <div className="card">
                         {list.length === 0
-                            ? <div className="emp"><div className="empico">\uD83D\uDCED</div>No tasks found.</div>
+                            ? <div className="emp"><div className="empico">📭</div>No tasks found.</div>
                             : list.map(function (t) {
                                 var c = CM[t.category] || CM.custom;
                                 return (
                                     <div key={t.id} className={'trow' + (t.done ? ' done' : '')} onClick={function () { toggle(t.id); }}>
-                                        <div className={'chk' + (t.done ? ' on' : '')}>{t.done ? '\u2713' : ''}</div>
+                                        <div className={'chk' + (t.done ? ' on' : '')}>{t.done ? '✓' : ''}</div>
                                         <div className="cdot" style={{ background: c.color }} />
                                         <span className="trn">{t.name}</span>
                                         <span style={{ fontSize: 10.5, color: 'var(--tx3)', marginRight: 2 }}>{t.date}</span>
                                         <span className="trt">{fmt(t.start)}</span>
                                         <span className="trd">{durStr(t.start, t.end)}</span>
                                         <div className="tacts" onClick={function (e) { e.stopPropagation(); }}>
-                                            <button className="abt" onClick={function () { onEdit(t); }}>\u270F\uFE0F</button>
-                                            <button className="abt" onClick={function () { onDel(t.id); }}>\uD83D\uDDD1\uFE0F</button>
+                                            <button className="abt" onClick={function () { onEdit(t); }}>✏️</button>
+                                            <button className="abt" onClick={function () { onDel(t.id); }}>🗑️</button>
                                         </div>
                                     </div>
                                 );
@@ -1625,16 +1625,16 @@
         // ── Streaks Page ──────────────────────────────────────────────────────
         function StreaksPage() {
             var data = [
-                { e: '\uD83D\uDCAA', n: 7, l: 'Gym', c: '#ef4444', best: 14, days: [1, 1, 1, 1, 1, 1, 0] },
-                { e: '\uD83E\uDDE0', n: 12, l: 'Study', c: '#8b5cf6', best: 20, days: [1, 1, 0, 1, 1, 1, 1] },
-                { e: '\uD83D\uDE34', n: 3, l: 'Sleep', c: '#3b82f6', best: 30, days: [1, 1, 1, 0, 0, 1, 1] },
-                { e: '\uD83D\uDCDA', n: 5, l: 'Classes', c: '#f59e0b', best: 10, days: [1, 0, 1, 1, 1, 1, 0] },
-                { e: '\u26BD', n: 2, l: 'Sports', c: '#10b981', best: 8, days: [0, 1, 1, 0, 0, 0, 0] },
-                { e: '\uD83C\uDF7D\uFE0F', n: 21, l: 'Meals', c: '#f97316', best: 45, days: [1, 1, 1, 1, 1, 1, 1] },
+                { e: '💪', n: 7, l: 'Gym', c: '#ef4444', best: 14, days: [1, 1, 1, 1, 1, 1, 0] },
+                { e: '🧠', n: 12, l: 'Study', c: '#8b5cf6', best: 20, days: [1, 1, 0, 1, 1, 1, 1] },
+                { e: '😴', n: 3, l: 'Sleep', c: '#3b82f6', best: 30, days: [1, 1, 1, 0, 0, 1, 1] },
+                { e: '📚', n: 5, l: 'Classes', c: '#f59e0b', best: 10, days: [1, 0, 1, 1, 1, 1, 0] },
+                { e: '⚽', n: 2, l: 'Sports', c: '#10b981', best: 8, days: [0, 1, 1, 0, 0, 0, 0] },
+                { e: '🍽️', n: 21, l: 'Meals', c: '#f97316', best: 45, days: [1, 1, 1, 1, 1, 1, 1] },
             ];
             return (
                 <div className="page">
-                    <div className="sec">\uD83D\uDD25 Habit Streaks</div>
+                    <div className="sec">🔥 Habit Streaks</div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(155px,1fr))', gap: 13, marginBottom: 22 }}>
                         {data.map(function (s) {
                             return (
@@ -1658,7 +1658,7 @@
                         })}
                     </div>
                     <div className="card">
-                        <div className="card-head"><h3>\uD83D\uDCCA Weekly Completion Rate</h3></div>
+                        <div className="card-head"><h3>📊 Weekly Completion Rate</h3></div>
                         <div className="card-body">
                             {data.map(function (s) {
                                 return <PBar key={s.l} label={s.e + ' ' + s.l} pct={Math.round(s.days.filter(Boolean).length / 7 * 100)} color={s.c} />;
@@ -1684,7 +1684,7 @@
 
             useEffect(function () {
                 var id = setTimeout(function () {
-                    addToast({ icon: '\u23F0', title: 'Class starting soon!', msg: 'Math Lecture in 15 minutes' });
+                    addToast({ icon: '⏰', title: 'Class starting soon!', msg: 'Math Lecture in 15 minutes' });
                 }, 2500);
                 return function () { clearTimeout(id); };
             }, []);
@@ -1699,29 +1699,29 @@
             function toggle(id) {
                 var t = tasks.find(function (x) { return x.id === id; });
                 setTasks(function (p) { return p.map(function (x) { return x.id === id ? Object.assign({}, x, { done: !x.done }) : x; }); });
-                if (t && !t.done) addToast({ icon: '\u2705', title: 'Task complete!', msg: t.name });
+                if (t && !t.done) addToast({ icon: '✅', title: 'Task complete!', msg: t.name });
             }
             function saveTask(t) {
                 var exists = tasks.find(function (x) { return x.id === t.id; });
                 if (exists) setTasks(function (p) { return p.map(function (x) { return x.id === t.id ? t : x; }); });
                 else setTasks(function (p) { return p.concat([t]); });
-                addToast({ icon: exists ? '\uD83D\uDCBE' : '\u2795', title: exists ? 'Task updated!' : 'Task added!', msg: t.name });
+                addToast({ icon: exists ? '💾' : '➕', title: exists ? 'Task updated!' : 'Task added!', msg: t.name });
             }
             function delTask(id) {
                 var t = tasks.find(function (x) { return x.id === id; });
                 setTasks(function (p) { return p.filter(function (x) { return x.id !== id; }); });
-                if (t) addToast({ icon: '\uD83D\uDDD1\uFE0F', title: 'Deleted', msg: t.name });
+                if (t) addToast({ icon: '🗑️', title: 'Deleted', msg: t.name });
             }
 
             var NAV = [
-                { id: 'dashboard', icon: '\uD83C\uDFE0', label: 'Dashboard' },
-                { id: 'timeline', icon: '\u23F1', label: 'Timeline' },
+                { id: 'dashboard', icon: '🏠', label: 'Dashboard' },
+                { id: 'timeline', icon: '⏱', label: 'Timeline' },
                 {
-                    id: 'tasks', icon: '\uD83D\uDCCB', label: 'All Tasks',
+                    id: 'tasks', icon: '📋', label: 'All Tasks',
                     badge: tasks.filter(function (t) { return !t.done && t.date === todayStr(); }).length || null
                 },
-                { id: 'week', icon: '\uD83D\uDCC5', label: 'Weekly View' },
-                { id: 'streaks', icon: '\uD83D\uDD25', label: 'Streaks' },
+                { id: 'week', icon: '📅', label: 'Weekly View' },
+                { id: 'streaks', icon: '🔥', label: 'Streaks' },
             ];
             var cur = NAV.find(function (n) { return n.id === page; }) || NAV[0];
 
@@ -1731,7 +1731,7 @@
 
                     <aside className={'sidebar' + (sideOpen ? ' open' : '')}>
                         <div className="logo">
-                            <div className="logo-icon">\u26A1</div>
+                            <div className="logo-icon">⚡</div>
                             <div>
                                 <div className="logo-name">Daily Routine</div>
                                 <div className="logo-sub">Manager</div>
@@ -1752,11 +1752,11 @@
 
                         <div className="nlbl" style={{ marginTop: 12 }}>Settings</div>
                         <div className="ni-row" onClick={function () { setDark(function (d) { return !d; }); }}>
-                            <span className="ic">{dark ? '\u2600\uFE0F' : '\uD83C\uDF19'}</span>
+                            <span className="ic">{dark ? '☀️' : '🌙'}</span>
                             {dark ? 'Light Mode' : 'Dark Mode'}
                         </div>
-                        <div className="ni-row" onClick={function () { addToast({ icon: '\uD83D\uDCE4', title: 'PDF Exported!', msg: 'Your routine has been saved.' }); }}>
-                            <span className="ic">\uD83D\uDCE4</span>Export PDF
+                        <div className="ni-row" onClick={function () { addToast({ icon: '📤', title: 'PDF Exported!', msg: 'Your routine has been saved.' }); }}>
+                            <span className="ic">📤</span>Export PDF
                         </div>
 
                         <div className="sfooter">
@@ -1764,7 +1764,7 @@
                                 <div className="av">S</div>
                                 <div>
                                     <div className="uname">Subham Sethy</div>
-                                    <div className="urole">Student \u00B7 Bhubaneswar</div>
+                                    <div className="urole">Student · Bhubaneswar</div>
                                 </div>
                             </div>
                         </div>
@@ -1772,10 +1772,10 @@
 
                     <div className="main">
                         <div className="topbar">
-                            <button className="ibtn mob" onClick={function () { setSideOpen(function (o) { return !o; }); }}>\u2630</button>
+                            <button className="ibtn mob" onClick={function () { setSideOpen(function (o) { return !o; }); }}>☰</button>
                             <div className="tbar-title">{cur.icon} {cur.label}</div>
                             <span className="tdate">{todayLabel()}</span>
-                            <button className="ibtn" onClick={function () { setDark(function (d) { return !d; }); }}>{dark ? '\u2600\uFE0F' : '\uD83C\uDF19'}</button>
+                            <button className="ibtn" onClick={function () { setDark(function (d) { return !d; }); }}>{dark ? '☀️' : '🌙'}</button>
                             <button className="btn bp" onClick={function () { setModal('add'); }}>+ Add Task</button>
                         </div>
 
